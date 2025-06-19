@@ -1,0 +1,253 @@
+/* =============================
+   RESET BÁSICO
+   ============================= */
+   :root {
+  /* Colores principales */
+  --color-principal: #b60032;       /* Rojo oscuro / vino (botones, subrayados) */
+  --color-secundario: #f5f0f2;      /* Rosa muy suave (fondo de cards) */
+  --color-texto-claro: #ffffff;     /* Blanco */
+  --color-texto-oscuro: #212121;    /* Gris muy oscuro para títulos/textos */
+  --color-fondo-nav: rgba(33, 33, 33, 0.6); /* Navbar semitransparente oscuro */
+  --color-gris-claro: #f7f7f7;      /* Fondo general después del hero */
+  --color-borde-card: rgba(182, 6, 50, 0.1); /* Borde suave de las cards */
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html { scroll-behavior: smooth; }
+
+/* =============================
+   FUENTES & VARIABLES
+   ============================= */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #b60032, #1b0057);
+  min-height: 100vh;
+}
+.login-wrapper {
+  min-height: calc(100vh - 64px); /* Resta el alto del navbar */
+}
+:root {
+  --bg-form: #ffffff;
+  --input-bg: #d3d3d8;
+  --btn-gradient: linear-gradient( to right, #4a90e2, #1259ac );
+  --text-dark: #212121;
+}
+
+/* =============================
+   CONTENEDOR PRINCIPAL
+   ============================= */
+.login-container {
+  width: 90%;
+  max-width: 1000px;
+  display: flex;
+  background: var(--bg-form);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+}
+
+/* =============================
+   LADO IZQUIERDO (FORM)
+   ============================= */
+.login-form {
+  flex: 1;
+  padding: 3rem 2rem;
+}
+
+.login-form h1 {
+  font-size: 2.5rem;
+  color: var(--text-dark);
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+/* INPUTS CON ICONO */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: var(--input-bg);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+}
+
+.input-group .icon {
+  margin-right: 0.75rem;
+  color: var(--text-dark);
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.input-group input {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.input-group input:focus {
+  outline: none;
+}
+
+/* RECAPTCHA */
+.recaptcha-container {
+  margin-bottom: 1.5rem;
+  /* centrar internamente */
+  display: flex;
+  justify-content: center;
+}
+
+/* BOTÓN LOGIN */
+.btn-login {
+  display: block;
+  width: 100%;
+  padding: 0.85rem;
+  background: var(--btn-gradient);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.btn-login:hover {
+  opacity: 0.9;
+}
+
+/* LINK DE REGISTRO */
+.register-link {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.95rem;
+  color: var(--text-dark);
+}
+.register-link a {
+  font-weight: 600;
+  color: var(--text-dark);
+  text-decoration: underline;
+}
+
+/* =============================
+   LADO DERECHO (IMAGEN)
+   ============================= */
+.login-image {
+  flex: 1;
+  overflow: hidden;
+}
+
+.login-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* =============================
+   RESPONSIVE (MÓVIL)
+   ============================= */
+@media screen and (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+  .login-image {
+    height: 200px;
+  }
+}
+.login-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 64px); /* Resta el alto del navbar */
+  padding-top: 6rem;
+}
+
+/* ============================= */
+/* === 4.4 NAVBAR ============== */
+/* ============================= */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: var(--color-fondo-nav);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+.navbar__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo img {
+  height: 40px;
+}
+
+.navbar__menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.navbar__menu li a {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  color: var(--color-texto-claro);
+  padding: 0.25rem;
+  transition: color 0.3s;
+}
+
+.navbar__menu li a:hover,
+.navbar__menu li a.active {
+  color: var(--color-principal);
+}
+
+.navbar__btn {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-texto-claro);
+  background-color: var(--color-principal);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.navbar__btn:hover {
+  background-color: transparent;
+  color: var(--color-principal);
+  border: 2px solid var(--color-principal);
+}
+
+/* Toggle menú móvil */
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.navbar__toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--color-texto-claro);
+  margin: 4px 0;
+  transition: all 0.3s ease;
+}
+.form-error {
+  background-color: #ffe6e6;
+  color: #b60032;
+  border: 1px solid #b60032;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border-radius: 5px;
+  font-weight: 500;
+  text-align: center;
+}

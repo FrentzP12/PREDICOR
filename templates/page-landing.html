@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrediCor – Sanando corazones, mejorando vidas</title>
+
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Estilos propios -->
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+</head>
+
+<body>
+  <!-- ======= NAVBAR ======= -->
+  <nav class="navbar">
+    <div class="navbar__container">
+      <!-- Logo -->
+      <a href="{% url 'home' %}" class="navbar__logo">
+        <img src="{% static 'images/logo.png' %}" alt="PrediCor" />
+      </a>
+
+      <!-- Menú links -->
+      <ul class="navbar__menu">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#about">About us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ul>
+
+      <!-- Botón destacado -->
+      <a href="{% url 'login' %}" class="navbar__btn">Realizar diagnóstico</a>
+
+      <!-- Ícono menú móvil (opcional) -->
+      <div class="navbar__toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ======= HERO SECTION ======= -->
+  <section class="hero">
+    <!-- Imagen de fondo -->
+    <div class="hero__bg"></div>
+
+    <!-- Contenido del hero -->
+    <div class="hero__content">
+      <div class="hero__text">
+        <!-- Ícono corazón lineal SVG -->
+        <div class="hero__icon">
+          <img src="{% static 'images/heart.svg' %}" alt="Icono Corazón" />
+        </div>
+
+        <h1>Sanando corazones, <span class="hero__highlight">mejorando vidas</span></h1>
+        <p class="hero__subtitle">¡Descubre tu salud cardíaca hoy!</p>
+        <a href="{% url 'login' %}" class="btn btn--primary">Iniciar diagnóstico</a>
+      </div>
+      <!-- Gráfico de ECG (latidos) sobre la derecha -->
+      <div class="hero__image">
+        <!-- Podemos usar un SVG o PNG con el latido -->
+        <!-- Por simplicidad, asumimos que está “bakeado” dentro de la imagen de fondo -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FEATURES / BENEFICIOS ======= -->
+  <section class="features" id="services">
+    <div class="features__container">
+      <!-- Card 1: Evaluaciones Inteligentes -->
+      <div class="card">
+        <div class="card__icon">
+          <img src="{% static 'images/doctor.png' %}" alt="Evaluaciones Inteligentes" />
+        </div>
+        <h3 class="card__title">Evaluaciones Inteligentes</h3>
+        <p class="card__text">
+          Análisis personalizado basado en datos médicos para detectar riesgos cardíacos a tiempo.
+        </p>
+      </div>
+
+      <!-- Card 2: Modelo Predictivo Confiable -->
+      <div class="card">
+        <div class="card__icon">
+          <img src="{% static 'images/latido-del-corazon.png' %}" alt="Modelo Predictivo Confiable" />
+        </div>
+        <h3 class="card__title">Modelo Predictivo Confiable</h3>
+        <p class="card__text">
+          Utilizamos Machine Learning supervisado para ofrecer predicciones precisas y confiables.
+        </p>
+      </div>
+
+      <!-- Card 3: Atención Oportuna -->
+      <div class="card">
+        <div class="card__icon">
+          <img src="{% static 'images/receta.png' %}"alt="Atención Oportuna" />
+        </div>
+        <h3 class="card__title">Atención Oportuna</h3>
+        <p class="card__text">
+          Facilitamos la detección temprana para que puedas recibir tratamiento antes de que los síntomas empeoren.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======= FOOTER (opcional) ======= -->
+  <footer class="footer">
+    <div class="footer__content">
+      <p>© 2025 PrediCor. Todos los derechos reservados.</p>
+      <ul class="footer__social">
+        <li><a href="#"><img src="{% static 'images/facebook.png' %}" alt="Facebook" /></a></li>
+        <li><a href="#"><img src="{% static 'images/twitterx.png' %}"alt="Twitter" /></a></li>
+        <li><a href="#"><img src="{% static 'images/linkedin.png' %}" alt="LinkedIn" /></a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- Opcional: JavaScript para menú móvil -->
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

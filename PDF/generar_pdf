@@ -1,0 +1,81 @@
+import pandas as pd
+import numpy as np
+from pathlib import Path
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.impute import SimpleImputer
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+import xgboost as xgb
+from sklearn.metrics import roc_auc_score
+import matplotlib.pyplot as plt
+import joblib
+
+# ------------------------------
+# INFERENCIA CON NUEVOS DATOS
+# ------------------------------
+
+# 1. Recarga modelo y preprocesador
+modelo = xgb.Booster()
+modelo.load_model("C:/Users/frent/Desktop/Project_HC/modelo_xgb.json")
+preprocessor = joblib.load("C:/Users/frent/Desktop/Project_HC/preprocessor.joblib")
+
+# 2. Carga nuevos datos (mismo formato que el entrenamiento)
+new_df = pd.read_csv("C:/Users/frent/Desktop/Project_HC/synthetic_heart_data1.csv")
+
+# 3. Aplicar preprocesamiento
+X_new = preprocessor.transform(new_df)
+
+# 4. Crear DMatrix e inferir
+dnew = xgb.DMatrix(X_new)
+y_pred_prob = modelo.predict(dnew)
+
+# 5. Umbral y etiqueta final
+y_pred = (y_pred_prob > 0.5).astype(int)
+
+# 6. Adjuntar resultados al DataFrame original
+new_df["risk_prob"] = y_pred_prob
+new_df["risk_pred"] = y_pred
+
+print(new_df.head())
+
+# ------------------------------
+# EXPORTAR A PDF (landscape y escala)
+# ------------------------------
+
+from reportlab.lib.pagesizes import letter, landscape
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
+from reportlab.lib import colors
+
+# Prepara los datos para la tabla: encabezados + filas
+data = [new_df.columns.tolist()] + new_df.values.tolist()
+
+# Configura PDF en orientación horizontal
+pdf_path = "C:/Users/frent/Desktop/Project_HC/PDF/predicciones1.pdf"
+page_width, page_height = landscape(letter)
+pdf = SimpleDocTemplate(pdf_path, pagesize=landscape(letter))
+
+# Calcula un ancho de columna uniforme para que quepan todas
+n_cols = len(new_df.columns)
+col_width = page_width / n_cols
+
+# Crea la tabla con anchos
+table = Table(data, colWidths=[col_width] * n_cols)
+
+# Define estilo: fuente pequeña, grid fina
+style = TableStyle([
+    ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+    ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+    ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+    ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+    ('FONTSIZE', (0, 0), (-1, -1), 6),        # fuente más pequeña
+    ('BOTTOMPADDING', (0, 0), (-1, 0), 6),
+    ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+    ('GRID', (0, 0), (-1, -1), 0.25, colors.black),
+])
+table.setStyle(style)
+
+# Genera el PDF
+pdf.build([table])
+
+print(f"PDF generado exitosamente en: {pdf_path}")

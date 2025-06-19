@@ -1,0 +1,248 @@
+/* detail.css */
+
+/* ============ 1. RESET BÁSICO ============ */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html, body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: #f5f7fa;
+  color: #2a3f54;
+  line-height: 1.5;
+}
+a {
+  color: var(--color-secundario, #0f3d57);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============ 2. VARIABLES ============ */
+:root {
+  --color-primario: #d21034;
+  --color-secundario: #0f3d57;
+  --color-texto: #2a3f54;
+  --color-fondo: #ffffff;
+  --color-sombra: rgba(0,0,0,0.05);
+  --radio: 12px;
+}
+
+/* ============ 3. CONTENEDOR PRINCIPAL ============ */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* ============ 4. BACK LINK ============ */
+a.volver-dashboard {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--color-texto);
+}
+
+/* ============ 5. HEADER PACIENTE ============ */
+.doctor-header {
+  display: flex;
+  align-items: center;
+  background: var(--color-fondo);
+  padding: 1.25rem;
+  border-radius: var(--radio);
+  box-shadow: 0 2px 8px var(--color-sombra);
+  margin-bottom: 2rem;
+}
+.avatar-large {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--color-primario);
+  margin-right: 1.5rem;
+}
+.doctor-header h2 {
+  font-size: 1.5rem;
+  color: var(--color-texto);
+  margin-bottom: 0.25rem;
+}
+.doctor-header p {
+  font-size: 0.9rem;
+  color: #667784;
+}
+
+/* Botones de acción en header */
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.75rem;
+}
+.header-actions .btn {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radio);
+  border: none;
+  cursor: pointer;
+  font-weight: 500;
+}
+.btn--primary {
+  background-color: var(--color-primario);
+  color: #fff;
+}
+.btn--secondary {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+/* ============ 6. SECCIÓN DE HISTORIAS ============ */
+.full-diagnosis h3 {
+  font-size: 1.25rem;
+  color: var(--color-secundario);
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+.full-diagnosis h3::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 40px;
+  height: 3px;
+  background-color: var(--color-primario);
+  border-radius: 2px;
+}
+
+/* Lista de datos y vitales */
+.full-diagnosis ul {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+.full-diagnosis li {
+  background: var(--color-fondo);
+  padding: 1rem;
+  border-radius: var(--radio);
+  box-shadow: 0 2px 6px var(--color-sombra);
+}
+.full-diagnosis li .etiqueta {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #667784;
+}
+.full-diagnosis p {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* ============ 7. TARJETAS DE HISTORIA CLÍNICA ============ */
+.historia-card {
+  background: var(--color-fondo);
+  border-radius: var(--radio);
+  box-shadow: 0 2px 6px var(--color-sombra);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+.historia-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.historia-header .fecha {
+  font-size: 0.9rem;
+  color: var(--color-texto);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.historia-header .nivel-riesgo {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.nivel-riesgo.Bajo { background: #e0f7fa; color: #006064; }
+.nivel-riesgo.Medio { background: #fff8e1; color: #ff8f00; }
+.nivel-riesgo.Alto { background: #ffebee; color: #c62828; }
+
+.historia-datos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.historia-datos .dato {
+  text-align: center;
+}
+.historia-datos .dato .valor {
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.historia-datos .dato .etiqueta {
+  font-size: 0.8rem;
+  color: #667784;
+}
+
+/* Antecedentes y Medications */
+.section-block {
+  margin-top: 1rem;
+}
+.section-block h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: var(--color-texto);
+  margin-bottom: 0.5rem;
+}
+.section-block .contenido {
+  background: var(--color-fondo);
+  padding: 1rem;
+  border-radius: var(--radio);
+  box-shadow: 0 2px 6px var(--color-sombra);
+}
+.section-block .contenido ul {
+  list-style: disc inside;
+  color: var(--color-texto);
+}
+.section-block .contenido li {
+  margin-bottom: 0.5rem;
+}
+
+/* Botón “Actualizar” dentro de sección */
+.section-block .btn-actualizar {
+  margin-top: 0.5rem;
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: var(--color-secundario);
+  color: #fff;
+  border-radius: var(--radio);
+  font-size: 0.85rem;
+  border: none;
+  cursor: pointer;
+}
+
+/* ============ 8. MEDIA QUERIES ============ */
+@media (max-width: 768px) {
+  .doctor-header { flex-direction: column; text-align: center; }
+  .doctor-header .header-actions { justify-content: center; margin-top: 1rem; }
+  .historia-datos { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
+}
+
+/* (Asegúrate de tener definidas estas variables en tu detail.css o en un global): */
+:root {
+  --color-primario: #d21034;
+  --color-texto-muy-oscuro: #1b2a38;
+  --color-sombra: rgba(0, 0, 0, 0.1);
+}

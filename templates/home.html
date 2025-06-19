@@ -1,0 +1,465 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Dashboard Médico – Pacientes de Hoy{% endblock %}
+
+{% block content %}
+  <!-- ====== BANNER DE BIENVENIDA ====== -->
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+  <section class="banner container">
+    <div class="banner__contenido">
+      <!-- Texto de bienvenida -->
+      <div class="banner__texto">
+        <h2>
+          Bienvenido <span class="nombre-medico">Dr. Gonzales</span>!
+        </h2>
+        <p>Que tengas un excelente día atendiendo a tus pacientes.</p>
+      </div>
+      <!-- Imagen/Ilustración lateral -->
+      <div class="banner__imagen">
+        <!-- Reemplaza con la ilustración de médicos que tú quieras -->
+        <img src="static/images/medico.png" alt="Médico" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== CONTENEDOR PRINCIPAL ====== -->
+  <div class="container main">
+    <!-- ====== COLUMNA IZQUIERDA: PACIENTES DE HOY ====== -->
+    <div class="col-left">
+      <div class="card pacientes">
+        <h3>Pacientes de Hoy</h3>
+<button id="btn-agregar" class="btn btn--secondary" style="margin-bottom: 10px;">
+  + Agregar Paciente
+</button>
+<input type="text" id="busquedaPaciente" placeholder="Buscar por nombre..." class="input-busqueda" style="margin-bottom:10px; width: 100%;">
+<div id="pacientes-list" class="pacientes-list scrollable">
+  <!-- Será rellenado por JavaScript -->
+  <div id="pacientes-placeholder" class="placeholder">Cargando pacientes…</div>
+    </div>
+    </div>
+    </div>
+
+    <!-- ====== COLUMNA DERECHA: CALENDARIO + DETALLES ====== -->
+    <div class="col-right">
+      <!-- ==== TARJETA: CALENDARIO INTERACTIVO ==== -->
+      <div class="card calendario">
+        <h3>Mayo 2025</h3>
+        <!-- Cabecera del calendario: Mes/Año y flechas -->
+        <div class="calendar-header">
+          <div class="nav-mes">
+            <button id="prev-month" aria-label="Mes anterior">&lt;</button>
+          </div>
+          <div class="mes-anio" id="month-year">Mayo 2025</div>
+          <div class="nav-mes">
+            <button id="next-month" aria-label="Mes siguiente">&gt;</button>
+          </div>
+        </div>
+        <!-- Días de la semana -->
+        <div class="weekdays">
+          <div>Mo</div>
+          <div>Tu</div>
+          <div>We</div>
+          <div>Th</div>
+          <div>Fr</div>
+          <div>Sa</div>
+          <div>Su</div>
+        </div>
+        <!-- Contenedor de los días -->
+        <div class="days" id="calendar-days">
+          <!-- Se rellenará con JavaScript -->
+        </div>
+      </div>
+
+      <!-- ==== TARJETA: DETALLES DEL PACIENTE ===== -->
+      <div class="card detalles">
+        <h3>Detalles del Paciente Entrante</h3>
+        <!-- Header con foto + nombre + edad y ubicación -->
+        <div class="detalle-header">
+          <!-- Avatar del paciente entrante -->
+          <img
+            src='/static/images/default-avatar.png'
+            alt="Avatar Paciente"
+            id="detalle-avatar"
+          />
+          <div class="info-basica">
+            <span class="nombre-paciente" id="detalle-nombre">
+              -- Nombre --
+            </span>
+            <span class="edad-ubicacion" id="detalle-meta">
+              -- Edad -- | -- Ciudad/País --
+            </span>
+          </div>
+          <button id="btn-diagnostico" class="btn btn--primary" style="display:none; margin-left:auto;">
+            Ver Diagnóstico Completo
+          </button>
+        </div>
+
+        <!-- Datos clínicos (tipo de sangre, altura, peso) -->
+        <div class="datos-clinicos" id="detalle-datos">
+          <!-- Cada .dato se rellenará dinámicamente. -->
+          <!-- EJEMPLO (comentado): 
+          <div class="dato">
+            <span class="valor">O+</span>
+            <span class="etiqueta">Tipo</span>
+          </div>
+          <div class="dato">
+            <span class="valor">176 cm</span>
+            <span class="etiqueta">Altura</span>
+          </div>
+          <div class="dato">
+            <span class="valor">86 kg</span>
+            <span class="etiqueta">Peso</span>
+          </div>
+          -->
+          <div class="placeholder" style="flex: 1; text-align:center;">
+            Selecciona un paciente para ver sus datos clínicos…
+          </div>
+        </div>
+
+        <!-- Resumen clínico -->
+        <div class="resumen-clinico">
+          <!-- Título subrayado -->
+          <h4>Resumen clínico</h4>
+          <!-- Párrafo con resumen. Vacío si no hay paciente -->
+          <p id="detalle-resumen">
+            <!-- Aquí iría el texto del resumen clínico: alergias, antecedentes, etc. -->
+            -- Sin paciente seleccionado --
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+{% block extra_scripts %}
+
+  <!-- ====== JAVA SCRIPT DEL CALENDARIO ====== -->
+  <script>
+    (function () {
+      // ==== 1. VARIABLES Y REFERENCIAS ==== 
+      const monthYearLabel = document.getElementById("month-year");
+      const daysContainer = document.getElementById("calendar-days");
+      const prevBtn = document.getElementById("prev-month");
+      const nextBtn = document.getElementById("next-month");
+
+      const mesesES = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+
+      let hoy = new Date();
+      let mesActual = hoy.getMonth(); // 0–11
+      let anioActual = hoy.getFullYear();
+      let diaSeleccionado = hoy.getDate();
+
+      // ==== 2. FUNCIÓN PARA RENDERIZAR EL CALENDARIO ====
+      function renderizarCalendar(mes, anio) {
+        // 2.1 Ajustar la cabecera (Mes Año)
+        monthYearLabel.textContent =
+          mesesES[mes] + " " + anio;
+
+        // 2.2 Obtener primer día de la semana para (mes/anio) y total de días en el mes
+        //    new Date(año, mes, 1).getDay() devuelve 0 (Dom), 1 (Lun), …, 6 (Sáb)
+        const primerDiaSemana = new Date(anio, mes, 1).getDay(); 
+        // Queremos que la grilla empiece en Lunes (Mo). Pero JS cuenta domingo=0, lunes=1...
+        // Si primerDiaSemana=0 (Dom), entonces necesitamos “4 espacios vacíos” porque
+        // la grilla empieza en Lunes (índice 0).
+        // Mapeo: (JS) 0→6, 1→0, 2→1, 3→2, 4→3, 5→4, 6→5  (para encajar en “Mo…Su”)
+        const indicePrimerDia =
+          primerDiaSemana === 0 ? 6 : primerDiaSemana - 1;
+
+        // 2.3 Días que tiene el mes
+        const totalDiasMes = new Date(anio, mes + 1, 0).getDate();
+
+        // 2.4 Limpiar contenido previo
+        daysContainer.innerHTML = "";
+
+        // 2.5 Agregar DIVs vacíos para “rellenar” hasta el primer día del mes
+        for (let i = 0; i < indicePrimerDia; i++) {
+          const emptyDiv = document.createElement("div");
+          emptyDiv.classList.add("empty");
+          daysContainer.appendChild(emptyDiv);
+        }
+
+        // 2.6 Generar cada día del mes
+        for (let dia = 1; dia <= totalDiasMes; dia++) {
+          const diaDiv = document.createElement("div");
+          diaDiv.textContent = dia;
+
+          // Marca “hoy” si corresponde
+          if (
+            dia === hoy.getDate() &&
+            mes === hoy.getMonth() &&
+            anio === hoy.getFullYear()
+          ) {
+            diaDiv.classList.add("today");
+          }
+          // Marca “seleccionado” si coincide con el díaSeleccionado
+          if (
+            dia === diaSeleccionado &&
+            mes === mesActual &&
+            anio === anioActual
+          ) {
+            diaDiv.classList.add("selected");
+          }
+
+          // Agregar evento click para seleccionar día
+          diaDiv.addEventListener("click", function () {
+            // Desmarcar previo
+            const anteriores = daysContainer.querySelectorAll(
+              ".selected"
+            );
+            anteriores.forEach((el) =>
+              el.classList.remove("selected")
+            );
+            diaDiv.classList.add("selected");
+            diaSeleccionado = dia;
+
+            // (Aquí puedes disparar una función para, al hacer click en un día,
+            //  por ejemplo, filtrar “Pacientes de Hoy” o actualizar “Detalles”.)
+          });
+
+          daysContainer.appendChild(diaDiv);
+        }
+      }
+
+      // ==== 3. EVENTOS DE FLECHAS ==== 
+      prevBtn.addEventListener("click", () => {
+        mesActual--;
+        if (mesActual < 0) {
+          mesActual = 11;
+          anioActual--;
+        }
+        // Al cambiar de mes, reseteamos la selección de día
+        diaSeleccionado = null;
+        renderizarCalendar(mesActual, anioActual);
+      });
+
+      nextBtn.addEventListener("click", () => {
+        mesActual++;
+        if (mesActual > 11) {
+          mesActual = 0;
+          anioActual++;
+        }
+        diaSeleccionado = null;
+        renderizarCalendar(mesActual, anioActual);
+      });
+
+      // ==== 4. INICIALIZAR AL CARGAR LA PÁGINA ====
+      renderizarCalendar(mesActual, anioActual);
+    })();
+  </script>
+<script>
+;(function() {
+  const listContainer    = document.getElementById('pacientes-list');
+  const placeholder      = document.getElementById('pacientes-placeholder');
+  const btnDiagnostico   = document.getElementById('btn-diagnostico');
+  const API_URL          = '/api/patients/';
+
+  // Formatea fechas
+  function formatDate(iso) {
+    const d = new Date(iso);
+    const opts = { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return d.toLocaleDateString('es-ES', opts).replace('.', '');
+  }
+  let paginaActual = 1;
+  let terminoBusqueda = '';
+  // Carga la lista de pacientes
+function cargarPacientes(pagina = 1, search = '') {
+  fetch(`${API_URL}?page=${pagina}&search=${encodeURIComponent(search)}`)
+    .then(res => res.json())
+    .then(data => {
+      const pacientes = data.results || data;
+      listContainer.innerHTML = '';
+      if (!pacientes.length) {
+        listContainer.innerHTML = '<div class="placeholder">No hay pacientes encontrados.</div>';
+        return;
+      }
+      pacientes.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'paciente-item';
+        item.innerHTML = `
+          <div class="paciente-info">
+            <img src="${p.avatar||'/static/images/default-avatar.png'}" alt="">
+            <div class="datos">
+              <span class="nombre">${p.first_name} ${p.last_name}</span>
+              <span class="fecha">${formatDate(p.fecha_cita||new Date())}</span>
+            </div>
+          </div>
+          <button class="btn-historia">Ver Historia</button>
+        `;
+        item.querySelector('.btn-historia').addEventListener('click', () => loadDetalle(p.id));
+        listContainer.append(item);
+      });
+
+      // Agregar paginación si corresponde
+      renderPaginacion(data.count);
+    })
+    .catch(() => {
+      listContainer.innerHTML = '<div class="placeholder">Error cargando pacientes.</div>';
+    });
+}
+function renderPaginacion(total) {
+  const pagContainer = document.createElement('div');
+  pagContainer.className = 'paginacion';
+
+  const totalPaginas = Math.ceil(total / 10);
+  for (let i = 1; i <= totalPaginas; i++) {
+    const btn = document.createElement('button');
+    btn.textContent = i;
+    btn.className = i === paginaActual ? 'pagina-activa' : '';
+    btn.addEventListener('click', () => {
+      paginaActual = i;
+      cargarPacientes(paginaActual, terminoBusqueda);
+    });
+    pagContainer.appendChild(btn);
+  }
+
+  listContainer.appendChild(pagContainer);
+}
+document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
+  terminoBusqueda = e.target.value;
+  paginaActual = 1;
+  cargarPacientes(paginaActual, terminoBusqueda);
+});
+  // Carga detalle y muestra el botón único
+  function loadDetalle(id) {
+    fetch(API_URL + id + '/')
+      .then(res => res.json())
+      .then(p => {
+        // Rellenar sección de detalles...
+        document.getElementById('detalle-avatar').src    = p.avatar || '/static/images/default-avatar.png';
+        document.getElementById('detalle-nombre').textContent = `${p.first_name} ${p.last_name}`;
+        document.getElementById('detalle-meta').textContent   = `${p.age} años`;
+
+        // Rellenar datos clínicos...
+        const datosClin = document.getElementById('detalle-datos');
+        datosClin.innerHTML = `
+          <div class="dato"><span class="valor">${p.currentSmoker?'Sí':'No'}</span><span class="etiqueta">Fumador</span></div>
+          <div class="dato"><span class="valor">${p.totChol} mg/dL</span><span class="etiqueta">Colesterol</span></div>
+          <!-- etc... -->
+        `;
+
+        document.getElementById('detalle-resumen').textContent = p.resumen_clinico||'Sin resumen.';
+
+        // ¡Aquí mostramos y configuramos el botón único!
+        btnDiagnostico.style.display = 'inline-block';
+        btnDiagnostico.onclick = () => {
+          window.location.href = `/patients/${id}/`;
+        };
+      })
+      .catch(() => alert('Error al cargar detalles.'));
+  }
+
+  // Al iniciar página:
+  cargarPacientes();
+})();
+</script>
+<dialog id="modalPaciente" class="modal">
+  <form method="POST" id="formAgregarPaciente">
+    {% csrf_token %}
+    <h3>Registrar nuevo paciente</h3>
+
+    <input name="first_name" placeholder="Nombre" required>
+    <input name="last_name" placeholder="Apellido" required>
+    <input name="age" type="number" placeholder="Edad" required>
+    
+    <select name="male" required>
+      <option value="">Seleccione sexo</option>
+      <option value="true">Masculino</option>
+      <option value="false">Femenino</option>
+    </select>
+
+    <input name="education" type="number" placeholder="Nivel educativo (1–4)" required>
+    <input type="hidden" name="currentSmoker" value="false">
+    <label>
+     <input type="checkbox" name="currentSmoker" value="true">
+     Fuma actualmente
+    </label>
+    <input name="cigsPerDay" type="number" placeholder="Cigarrillos por día" disabled>
+    <label><input type="checkbox" name="BPMeds"> Toma medicamentos presión</label>
+    <label><input type="checkbox" name="prevalentStroke"> ACV previo</label>
+    <label><input type="checkbox" name="prevalentHyp"> Hipertensión</label>
+    <label><input type="checkbox" name="diabetes"> Diabetes</label>
+    <input name="totChol" type="number" step="any" placeholder="Colesterol total (mg/dL)">
+    <input name="sysBP" type="number" step="any" placeholder="Presión sistólica (mmHg)">
+    <input name="diaBP" type="number" step="any" placeholder="Presión diastólica (mmHg)">
+    <input name="BMI" type="number" step="any" placeholder="Índice de masa corporal">
+    <input name="heartRate" type="number" placeholder="Frecuencia cardíaca (lpm)">
+    <input name="glucose" type="number" step="any" placeholder="Glucosa en sangre (mg/dL)">
+
+    <div style="margin-top: 20px;">
+      <button type="submit" class="btn btn--primary">Agregar Paciente</button>
+      <button type="button" id="btnCancelar" class="btn btn--secondary">Cancelar</button>
+    </div>
+  </form>
+</dialog>
+<script>
+document.getElementById("btn-agregar").addEventListener("click", () => {
+  document.getElementById("modalPaciente").showModal();
+});
+
+document.getElementById("btnCancelar").addEventListener("click", () => {
+  document.getElementById("modalPaciente").close();
+});
+
+document.getElementById("formAgregarPaciente").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = new FormData(form);
+
+  ["currentSmoker","BPMeds","prevalentStroke","prevalentHyp","diabetes"].forEach(name => {
+    if (!data.has(name)) {
+      data.set(name, "false");
+    }
+  }); 
+
+  fetch('/api/patients/', {
+    method: 'POST',
+    body: data,
+    headers: {
+      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+    } 
+  })
+  .then(res => {
+    if (!res.ok) throw new Error("Error al guardar");
+    return res.json();
+  })
+  .then(() => {
+    document.getElementById("modalPaciente").close();
+    form.reset();
+    alert("Paciente agregado correctamente.");
+    location.reload();  // Recarga la lista
+  })
+  .catch(() => alert("Error al agregar paciente."));
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const checkboxFuma = document.querySelector('input[name="currentSmoker"][value="true"]');
+  const inputCigs = document.querySelector('input[name="cigsPerDay"]');
+
+  function toggleCigsInput() {
+    inputCigs.disabled = !checkboxFuma.checked;
+    if (inputCigs.disabled) {
+      inputCigs.value = "";  // Opcional: limpia el campo
+    }
+  }
+
+  // Escuchar cambios
+  checkboxFuma.addEventListener("change", toggleCigsInput);
+
+  // Ejecutar una vez al cargar el modal (por si quedó en un estado anterior)
+  document.getElementById("btn-agregar").addEventListener("click", toggleCigsInput);
+});
+
+</script>
+
+{% endblock %}

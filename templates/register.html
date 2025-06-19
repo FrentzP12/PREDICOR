@@ -1,0 +1,68 @@
+{% extends "baseregister.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+  <div class="card">
+<div class="image-side" style="background: url('{% static 'images/registro.jpg' %}') center/cover no-repeat;">
+</div>
+    <div class="form-side">
+      <h1>REGISTRO</h1>
+      <form action="{% url 'register' %}" method="POST" onsubmit="return validarFormulario()" class="form-grid">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div>
+          <label for="id_first_name">Nombres y Apellidos:</label>
+          {{ form.first_name }}
+          {{ form.first_name.errors }}
+        </div>
+        <div>
+          <label for="id_last_name">Apellidos:</label>
+          {{ form.last_name }}
+          {{ form.last_name.errors }}
+        </div>
+        <div>
+          <label for="id_email">Correo Electrónico:</label>
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div>
+          <label for="id_dni">DNI:</label>
+          {{ form.dni }}
+          {{ form.dni.errors }}
+        </div>
+        <div>
+          <label for="id_password">Contraseña:</label>
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+        <div>
+          <label for="id_password2">Repetir Contraseña:</label>
+          {{ form.password2 }}
+          {{ form.password2.errors }}
+        </div>
+        <div class="full">
+          <button type="submit" class="btn">Registrar</button>
+        </div>
+      </form>
+      <p class="login-link">¿Ya tienes una cuenta? <a href="{% url 'login' %}">Inicia Sesión</a></p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function validarFormulario() {
+    const pass = document.getElementById('id_password').value;
+    const pass2 = document.getElementById('id_password2').value;
+    if (pass !== pass2) {
+      alert('Las contraseñas no coinciden');
+      return false;
+    }
+    return true;
+  }
+</script>
+{% endblock %}
+
+
+<!-- static/css/register.css -->
+/* Importa aquí tus estilos existentes desde styles.css */
+@import url('assets/css/register.css');

@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Mi App Médica{% endblock %}</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&
+           family=Poppins:wght@400;500;600&display=swap"
+    rel="stylesheet"/>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}"/>
+  
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+  <!-- NAVBAR UNIVERSAL -->
+  <nav class="navbar">
+    <div class="container">
+      <div class="navbar__left">
+        <a href="{% url 'page-landing' %}" class="navbar__logo">
+          <img src="{% static 'images/logo.png' %}" alt="Logo Clínica"/>
+        </a>
+      </div>
+
+      <div class="navbar__center">
+        <!-- Sólo Home por ahora -->
+        <a href="{% url 'home' %}"
+           class="{% if request.path == '/' %}active{% endif %}">
+          Home
+        </a>
+      </div>
+
+      <div class="navbar__right">
+        <div class="navbar__perfil">
+          <img src="{% static 'images/default-avatar.png' %}" alt="Avatar Médico"/>
+          <div class="perfil__texto">
+            Dr. Gonzales<br/><span>Cardiólogo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

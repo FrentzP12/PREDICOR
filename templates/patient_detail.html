@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  Diagnóstico Completo – {{ paciente.first_name }} {{ paciente.last_name }}
+{% endblock %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+  <a href="{% url 'home' %}" class="btn-volver">← Volver al Dashboard</a>
+
+  <div class="doctor-header">
+    <img src="{% static 'images/default-avatar.png' %}"
+         alt="Avatar Paciente"
+         class="avatar-large">
+    <div>
+      <h2>{{ paciente.first_name }} {{ paciente.last_name }}</h2>
+      <p>Edad: {{ paciente.age }} años</p>
+    </div>
+  </div>
+
+  <section class="full-diagnosis">
+    <h3>Datos del Paciente</h3>
+    <ul>
+      <li>Sexo: {{ paciente.male|yesno:"Masculino,Femenino" }}</li>
+      <li>Educación: {{ paciente.education }}</li>
+      <li>Fumador: {{ paciente.currentSmoker|yesno:"Sí,No" }}</li>
+      <li>Cigarrillos/día: {{ paciente.cigsPerDay }}</li>
+      <li>BPMeds: {{ paciente.BPMeds|yesno:"Sí,No" }}</li>
+      <li>Prevalente Stroke: {{ paciente.prevalentStroke|yesno:"Sí,No" }}</li>
+      <li>Prevalente Hyp: {{ paciente.prevalentHyp|yesno:"Sí,No" }}</li>
+      <li>Diabetes: {{ paciente.diabetes|yesno:"Sí,No" }}</li>
+    </ul>
+
+    <h3>Signos Vitales</h3>
+    <ul>
+      <li>Colesterol total: {{ paciente.totChol }} mg/dL</li>
+      <li>Presión arterial: {{ paciente.sysBP }}/{{ paciente.diaBP }} mmHg</li>
+      <li>BMI: {{ paciente.BMI }}</li>
+      <li>Frecuencia cardiaca: {{ paciente.heartRate }} bpm</li>
+      <li>Glucosa: {{ paciente.glucose }} mg/dL</li>
+    </ul>
+  </section>
+
+  <!-- Único botón que dispara ambas predicciones -->
+  <div style="text-align:center; margin:2rem 0;">
+    <form method="get" style="display:inline-block;">
+      <input type="hidden" name="predict" value="1">
+      <button type="submit" class="btn btn--primary">
+        Detección temprana de riesgo cardíaco
+      </button>
+    </form>
+  </div>
+
+  <!-- Resultados: dos gráficos lado a lado -->
+  {% if risk_chd %}
+    <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:2rem; margin-bottom:2rem;">
+      <div style="text-align:center;">
+        <div style="width:200px; height:200px; margin:0 auto; position:relative;">
+          <canvas id="chartChd"></canvas>
+        </div>
+        <p>CHD 10 años: <strong>{{ risk_chd }}%</strong></p>
+      </div>
+      <div style="text-align:center;">
+        <div style="width:200px; height:200px; margin:0 auto; position:relative;">
+          <canvas id="chartStroke"></canvas>
+        </div>
+        <p>Stroke: <strong>{{ risk_stroke }}%</strong></p>
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    {% if risk_chd %}
+    // CHD
+    new Chart(
+      document.getElementById('chartChd').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Riesgo','Sin riesgo'],
+          datasets: [{
+            data: [{{ risk_chd }}, {{ risk_no_chd }}],
+            backgroundColor: ['#e74c3c','#ecf0f1'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          cutout: '70%',
+          plugins: { legend: { display: false } },
+          responsive: true
+        }
+      }
+    );
+    // Stroke
+    new Chart(
+      document.getElementById('chartStroke').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Riesgo','Sin riesgo'],
+          datasets: [{
+            data: [{{ risk_stroke }}, {{ risk_no_stroke }}],
+            backgroundColor: ['#3498db','#ecf0f1'],
+            borderWidth: 1
+          }]
+        },
+        options: {
+          cutout: '70%',
+          plugins: { legend: { display: false } },
+          responsive: true
+        }
+      }
+    );
+    {% endif %}
+  </script>
+{% endblock %}

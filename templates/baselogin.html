@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>PrediCor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS global -->
+  <link rel="stylesheet" href="{% static 'css/login.css' %}">
+
+</head>
+<body>
+
+  <!-- NAVBAR UNIVERSAL -->
+   <!-- ======= NAVBAR ======= -->
+  <nav class="navbar">
+    <div class="navbar__container">
+      <!-- Logo -->
+      <a href="{% url 'page-landing' %}" class="navbar__logo">
+        <img src="{% static 'images/logo.png' %}" alt="PrediCor" />
+      </a>
+
+      <!-- Menú links -->
+      <ul class="navbar__menu">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#about">About us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ul>
+
+      <!-- Botón destacado -->
+      <a href="{% url 'login' %}" class="navbar__btn">Realizar diagnóstico</a>
+
+      <!-- Ícono menú móvil (opcional) -->
+      <div class="navbar__toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

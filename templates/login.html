@@ -1,0 +1,51 @@
+{% extends "baselogin.html" %}
+{% load static %}
+{% block content %}
+<div class="login-wrapper">
+<div class="login-container">
+  <!-- Lado Izquierdo: Formulario -->
+  <div class="login-form">
+    <h1>LOGIN</h1>
+    <form action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
+      {% if form.non_field_errors %}
+        <div class="form-error">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+      <!-- DNI -->
+      <label class="input-group">
+        <span class="icon">
+          <!-- usuario SVG -->
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 12c2.7 0 4.9-2.2 4.9-4.9S14.7 2.2 12 2.2 7.1 4.4 7.1 7.1 9.3 12 12 12zm0 2.4c-3.3 0-9.8 1.7-9.8 5.1v2.5h19.6v-2.5c0-3.4-6.5-5.1-9.8-5.1z"/></svg>
+        </span>
+        <input type="text" name="username" placeholder="DNI" required autofocus>
+      </label>
+      {{ form.username.errors }}
+
+      <!-- Contraseña -->
+      <label class="input-group">
+        <span class="icon">
+          <!-- candado SVG -->
+          <svg viewBox="0 0 24 24"><path fill="currentColor" d="M17 8h-1V6.2c0-2.1-1.7-3.8-3.8-3.8S8.4 4.1 8.4 6.2V8H7c-.6 0-1 .4-1 1v9c0 .6.4 1 1 1h10c.6 0 1-.4 1-1v-9c0-.6-.4-1-1-1zm-6 9.5c-.8 0-1.5-.7-1.5-1.5S10.2 14.5 11 14.5s1.5.7 1.5 1.5S11.8 17.5 11 17.5zm2-9.5H9.1V6.2c0-1.6 1.3-2.9 2.9-2.9s2.9 1.3 2.9 2.9V8z"/></svg>
+        </span>
+        <input type="password" name="password" placeholder="Contraseña" required>
+      </label>
+      {{ form.password.errors }}
+
+      <!-- Botón -->
+      <button type="submit" class="btn-login">Ingresar</button>
+    </form>
+
+    <p class="register-link">
+      ¿No tienes una cuenta? <a href="{% url 'register' %}">Regístrate</a>
+    </p>
+  </div>
+
+  <!-- Lado Derecho: Imagen -->
+  <div class="login-image">
+    <img src="{% static 'images/inicio sesion.jpg' %}" alt="Médico con bordado de corazón">
+  </div>
+</div>
+</div>
+{% endblock %}

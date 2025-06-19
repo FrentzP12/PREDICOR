@@ -1,0 +1,391 @@
+body {
+  font-family: "Open Sans", sans-serif;
+}
+h1, h2, h3, .btn, nav a {
+  font-family: "Poppins", sans-serif;
+}
+:root {
+  /* Colores principales */
+  --color-principal: #b60032;       /* Rojo oscuro / vino (botones, subrayados) */
+  --color-secundario: #f5f0f2;      /* Rosa muy suave (fondo de cards) */
+  --color-texto-claro: #ffffff;     /* Blanco */
+  --color-texto-oscuro: #212121;    /* Gris muy oscuro para títulos/textos */
+  --color-fondo-nav: rgba(33, 33, 33, 0.6); /* Navbar semitransparente oscuro */
+  --color-gris-claro: #f7f7f7;      /* Fondo general después del hero */
+  --color-borde-card: rgba(182, 6, 50, 0.1); /* Borde suave de las cards */
+}
+
+/* ============================= */
+/* === 4.1 RESET BÁSICO (opcional) === */
+/* ============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ============================= */
+/* === 4.2 VARIABLES (Paleta) === */
+/* ============================= */
+:root {
+  --color-principal: #b60032;
+  --color-secundario: #f5f0f2;
+  --color-texto-claro: #ffffff;
+  --color-texto-oscuro: #212121;
+  --color-fondo-nav: rgba(33, 33, 33, 0.6);
+  --color-gris-claro: #f7f7f7;
+  --color-borde-card: rgba(182, 6, 50, 0.1);
+}
+
+/* ============================= */
+/* === 4.3 ESTILOS GLOBALES === */
+/* ============================= */
+body {
+  font-family: "Open Sans", sans-serif;
+  background-color: var(--color-gris-claro);
+  color: var(--color-texto-oscuro);
+  line-height: 1.6;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Clases de botón genéricas */
+.btn {
+  display: inline-block;
+  padding: 0.75rem 1.75rem;
+  border: 2px solid var(--color-principal);
+  border-radius: 25px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.btn--primary {
+  background-color: var(--color-principal);
+  color: var(--color-texto-claro);
+}
+
+.btn--primary:hover {
+  background-color: transparent;
+  color: var(--color-principal);
+}
+
+/* ============================= */
+/* === 4.4 NAVBAR ============== */
+/* ============================= */
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: var(--color-fondo-nav);
+  backdrop-filter: blur(6px);
+  z-index: 1000;
+}
+
+.navbar__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.navbar__logo img {
+  height: 40px;
+}
+
+.navbar__menu {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.navbar__menu li a {
+  font-family: "Poppins", sans-serif;
+  font-size: 1rem;
+  color: var(--color-texto-claro);
+  padding: 0.25rem;
+  transition: color 0.3s;
+}
+
+.navbar__menu li a:hover,
+.navbar__menu li a.active {
+  color: var(--color-principal);
+}
+
+.navbar__btn {
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  color: var(--color-texto-claro);
+  background-color: var(--color-principal);
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.navbar__btn:hover {
+  background-color: transparent;
+  color: var(--color-principal);
+  border: 2px solid var(--color-principal);
+}
+
+/* Toggle menú móvil */
+.navbar__toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.navbar__toggle .bar {
+  width: 25px;
+  height: 3px;
+  background-color: var(--color-texto-claro);
+  margin: 4px 0;
+  transition: all 0.3s ease;
+}
+
+/* ============================= */
+/* === 4.5 HERO SECTION ======== */
+/* ============================= */
+.hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Imagen de fondo: cubre todo el hero */
+.hero__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("../images/background.png") center/cover no-repeat;
+  filter: brightness(0.6);
+  z-index: -1;
+}
+
+/* Contenedor interno: texto + posible imagen de ECG */
+.hero__content {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  color: var(--color-texto-claro);
+}
+
+/* lado izquierdo: texto */
+.hero__text {
+  display: grid;
+  grid-template-columns: auto 1fr;  /* col1=icono, col2=textos */
+  grid-template-rows: auto auto auto; /* fila1=h1, fila2=p, fila3=btn  */
+  column-gap: 1.5rem;
+  align-items: center;              /* centra verticalmente icono en sus 3 filas */
+  max-width: 700px;                 /* ajusta según necesites */
+}
+
+/* Icono: ocupa las 3 filas de la primera columna */
+.hero__icon {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  width: 120px;       /* agranda el icono */
+  flex-shrink: 0;
+  margin: 0;          /* eliminamos márgenes anteriores */
+}
+
+/* Asignamos cada elemento a su celda */
+.hero__text h1 {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 1.8rem;
+  margin: 0;          /* quitamos posibles márgenes */
+}
+.hero__subtitle {
+  grid-column: 2;
+  grid-row: 2;
+  margin: 0;          /* quitamos márgenes innecesarios */
+}
+.hero .btn--primary {
+  grid-column: 2;
+  grid-row: 3;
+  justify-self: start;
+}
+
+/* Ajustes de responsividad */
+@media screen and (max-width: 768px) {
+  /* En tablet/móvil lo volvemos todo a columna */
+  .hero__text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    row-gap: 1rem;
+  }
+  .hero__icon {
+    width: 100px;
+  }
+}
+/* (Opcional) Contenedor para ilustración de ECG en el hero, si quieres poner un SVG aparte */
+.hero__image {
+  max-width: 400px;
+  /* Si no tienes un elemento extra, este div se queda vacío y el layout se centra en el texto */
+}
+
+/* ============================= */
+/* === 4.6 SECCIÓN FEATURES ==== */
+/* ============================= */
+.features {
+  padding: 6rem 1rem;
+  background-color: var(--color-gris-claro);
+}
+
+.features__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Estilo general de cada card */
+.card {
+  background-color: var(--color-secundario);
+  border: 1px solid var(--color-borde-card);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  max-width: 350px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.card__icon {
+  width: 60px;
+  margin: 0 auto 1rem;
+}
+
+.card__icon img {
+  width: 100%;
+  height: auto;
+  filter: drop-shadow(1px 1px 3px rgba(0, 0, 0, 0.2));
+}
+
+.card__title {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+  color: var(--color-texto-oscuro);
+}
+
+.card__text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-texto-oscuro);
+}
+
+/* ============================= */
+/* === 4.7 FOOTER ============== */
+/* ============================= */
+.footer {
+  background-color: #ffffff;
+  padding: 2rem 1rem;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+}
+
+.footer__content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer__content p {
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+  color: #555555;
+}
+
+.footer__social {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+.footer__social li img {
+  width: 24px;
+  height: auto;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+}
+
+.footer__social li img:hover {
+  filter: none;
+}
+
+/* ============================= */
+/* === 4.8 MEDIA QUERIES ======= */
+/* ============================= */
+/* Pantallas medianas (tablets) */
+@media screen and (max-width: 992px) {
+  .hero__content {
+    flex-direction: column-reverse;
+    text-align: center;
+  }
+  .hero__text {
+    margin-top: 2rem;
+  }
+  .hero__image {
+    display: none; /* Ocultar si no tienes un SVG que mostrar aparte */
+  }
+
+  .navbar__menu {
+    display: none; /* Ocultamos menú en desktop; lo desplegaremos en móvil */
+  }
+  .navbar__toggle {
+    display: flex;
+  }
+
+  .features__container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Pantallas pequeñas (móviles) */
+@media screen and (max-width: 576px) {
+  .hero h1 {
+    font-size: 2rem;
+  }
+  .hero__subtitle {
+    font-size: 1rem;
+  }
+  .card {
+    padding: 1.5rem 1rem;
+  }
+}
