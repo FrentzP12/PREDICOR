@@ -37,8 +37,9 @@ REST_FRAMEWORK = {
 SECRET_KEY = 'django-insecure-3e)vos#5&)9_k6%j1v2ad(u9k^g8n@imly726%v(zfrah&vev6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 ALLOWED_HOSTS = [
        # localhost para desarrollo local
      "127.0.0.1",
@@ -157,7 +158,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'static' ]
-
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
