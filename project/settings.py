@@ -104,21 +104,17 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
- #   'default': {
-  #      'ENGINE': 'django.db.backends.postgresql',
-   #     'NAME': 'hcdb',
-    #    'USER': 'hcadmin',
-     #   'PASSWORD': 'Lulu536#',  # Asegúrate de que esté bien
-      #  'HOST': 'hcdb.c38o22iumbnj.us-east-2.rds.amazonaws.com',
-       # 'PORT': '5432',
-    #}
+
 
 DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
+   'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'hcdb',
+        'USER': 'hcadmin',
+        'PASSWORD': 'Lulu536#',  # Asegúrate de que esté bien
+        'HOST': 'hcdb.c38o22iumbnj.us-east-2.rds.amazonaws.com',
+        'PORT': '5432',
+    }
 }
 
 
