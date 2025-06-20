@@ -40,9 +40,12 @@
     <ul>
       <li>Colesterol total: {{ paciente.totChol }} mg/dL</li>
       <li>Presión arterial: {{ paciente.sysBP }}/{{ paciente.diaBP }} mmHg</li>
+      <li>Altura: {{ paciente.height }} m</li>
+      <li>Peso: {{ paciente.weight }} kg</li>
       <li>BMI: {{ paciente.BMI }}</li>
       <li>Frecuencia cardiaca: {{ paciente.heartRate }} bpm</li>
       <li>Glucosa: {{ paciente.glucose }} mg/dL</li>
+      <li>Triglicéridos: {{ paciente.triglycerides }} mg/dL</li>
     </ul>
   </section>
 
@@ -51,26 +54,29 @@
     <form method="get" style="display:inline-block;">
       <input type="hidden" name="predict" value="1">
       <button type="submit" class="btn btn--primary">
-        Detección temprana de riesgo cardíaco
+        Realizar Diagnóstico
       </button>
     </form>
   </div>
 
   <!-- Resultados: dos gráficos lado a lado -->
   {% if risk_chd %}
-    <div style="display:flex; justify-content:space-around; flex-wrap:wrap; gap:2rem; margin-bottom:2rem;">
-      <div style="text-align:center;">
-        <div style="width:200px; height:200px; margin:0 auto; position:relative;">
-          <canvas id="chartChd"></canvas>
-        </div>
-        <p>CHD 10 años: <strong>{{ risk_chd }}%</strong></p>
+    <!-- ————— Gráficos Doughnut ————— -->
+    <div class="charts-row">
+      <div class="chart-container">
+        <canvas id="chartChd"></canvas>
+        <p id="chdLabel" class="risk-label"></p>
       </div>
-      <div style="text-align:center;">
-        <div style="width:200px; height:200px; margin:0 auto; position:relative;">
-          <canvas id="chartStroke"></canvas>
-        </div>
-        <p>Stroke: <strong>{{ risk_stroke }}%</strong></p>
+      <div class="chart-container">
+        <canvas id="chartStroke"></canvas>
+        <p id="strokeLabel" class="risk-label"></p>
       </div>
+    </div>
+
+    <!-- ————— Gráfico Radar ————— -->
+    <div class="radar-container">
+      <canvas id="chartRadar"></canvas>
+      <p style="text-align:center; margin-top:0.5rem;">Perfil general de métricas clínicas</p>
     </div>
   {% endif %}
 </div>
@@ -79,45 +85,98 @@
 {% block extra_scripts %}
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    {% if risk_chd %}
-    // CHD
-    new Chart(
-      document.getElementById('chartChd').getContext('2d'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Riesgo','Sin riesgo'],
-          datasets: [{
-            data: [{{ risk_chd }}, {{ risk_no_chd }}],
-            backgroundColor: ['#e74c3c','#ecf0f1'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          cutout: '70%',
-          plugins: { legend: { display: false } },
-          responsive: true
-        }
+  {% if risk_chd %}
+    // ————— Doughnut CHD —————
+    const chdCtx = document.getElementById('chartChd').getContext('2d');
+    new Chart(chdCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Riesgo','Sin riesgo'],
+        datasets: [{
+          data: [{{ risk_chd }}, {{ risk_no_chd }}],
+          backgroundColor: ['#e74c3c','#ecf0f1'],
+          borderWidth: 1
+        }]
+      },
+      options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
+    });
+    // Etiqueta CHD
+    (()=>{
+      const lbl = document.getElementById('chdLabel');
+      const v = {{ risk_chd }};
+      if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
+      else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
+      else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
+      lbl.style.fontWeight = 'bold';
+    })();
+
+    // ————— Doughnut Stroke —————
+    const strokeCtx = document.getElementById('chartStroke').getContext('2d');
+    new Chart(strokeCtx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Riesgo','Sin riesgo'],
+        datasets: [{
+          data: [{{ risk_stroke }}, {{ risk_no_stroke }}],
+          backgroundColor: ['#3498db','#ecf0f1'],
+          borderWidth: 1
+        }]
+      },
+      options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
+    });
+    // Etiqueta Stroke
+    (()=>{
+      const lbl = document.getElementById('strokeLabel');
+      const v = {{ risk_stroke }};
+      if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
+      else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
+      else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
+      lbl.style.fontWeight = 'bold';
+    })();
+
+    // ————— Radar Actual vs Ideal —————
+    const radarCtx = document.getElementById('chartRadar').getContext('2d');
+    new Chart(radarCtx, {
+      type: 'radar',
+      data: {
+        labels: ['Colesterol','Triglicéridos','Glucosa','SysBP','HeartRate'],
+        datasets: [
+          {
+            label: 'Actual',
+            data: [
+              {{ paciente.totChol }},
+              {{ paciente.triglycerides }},
+              {{ paciente.glucose }},
+              {{ paciente.sysBP }},
+              {{ paciente.heartRate }}
+            ],
+            fill: true,
+            backgroundColor: 'rgba(210,16,52,0.2)',
+            borderColor: 'rgba(210,16,52,1)',
+            pointBackgroundColor: 'rgba(210,16,52,1)'
+          },
+          {
+            label: 'Ideal',
+            data: [
+              200,   // Colesterol ideal
+              150,   // Triglicéridos ideales
+              100,   // Glucosa ideal
+              120,   // SysBP ideal
+              80     // HeartRate ideal
+            ],
+            fill: true,
+            backgroundColor: 'rgba(52,152,219,0.2)',
+            borderColor: 'rgba(52,152,219,1)',
+            pointBackgroundColor: 'rgba(52,152,219,1)'
+          }
+        ]
+      },
+      options: {
+        scales: { r: { beginAtZero: true } },
+        plugins: { legend: { position: 'bottom' } },
+        responsive: true
       }
-    );
-    // Stroke
-    new Chart(
-      document.getElementById('chartStroke').getContext('2d'), {
-        type: 'doughnut',
-        data: {
-          labels: ['Riesgo','Sin riesgo'],
-          datasets: [{
-            data: [{{ risk_stroke }}, {{ risk_no_stroke }}],
-            backgroundColor: ['#3498db','#ecf0f1'],
-            borderWidth: 1
-          }]
-        },
-        options: {
-          cutout: '70%',
-          plugins: { legend: { display: false } },
-          responsive: true
-        }
-      }
-    );
-    {% endif %}
+    });
+  {% endif %}
   </script>
 {% endblock %}

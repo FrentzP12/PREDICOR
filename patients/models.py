@@ -50,9 +50,17 @@ class Patient(models.Model):
     totChol = models.FloatField()
     sysBP = models.FloatField()
     diaBP = models.FloatField()
-    BMI = models.FloatField()
+    BMI = models.FloatField(null=True, blank=True)
     heartRate = models.PositiveSmallIntegerField()
     glucose = models.FloatField()
+    height = models.FloatField(null=True, blank=True)         # en metros
+    weight = models.FloatField(null=True, blank=True)         # en kilogramos
+    triglycerides = models.FloatField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.height and self.weight and self.height > 0:
+            self.BMI = round(self.weight / (self.height ** 2), 2)
+        super().save(*args, **kwargs)    
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({'M' if self.male else 'F'}) | {self.age} años "

@@ -111,6 +111,14 @@ class PatientDetailView(DetailView):
             ctx["risk_stroke"]      = round(prob_stroke * 100, 1)
             ctx["risk_no_stroke"]   = round(100 - ctx["risk_stroke"], 1)
 
+            # 1️⃣ RANGOS IDEALES
+            ctx["ideal_ranges"] = {
+            "totChol": 200,         # mg/dL
+            "triglycerides": 150,   # mg/dL
+            "glucose": 100,         # mg/dL
+            "sysBP": 120,           # mmHg
+            "heartRate": 70,        # bpm
+            }
 
         return ctx
 

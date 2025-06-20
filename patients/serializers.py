@@ -23,4 +23,7 @@ class PatientSerializer(serializers.ModelSerializer):
             'BMI',
             'heartRate',
             'glucose',
+            'weight',
+            'height',
+            'triglycerides',
         ]

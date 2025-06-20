@@ -246,3 +246,21 @@ a.volver-dashboard {
   --color-texto-muy-oscuro: #1b2a38;
   --color-sombra: rgba(0, 0, 0, 0.1);
 }
+.charts-row {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.chart-container {
+  text-align: center;
+}
+.risk-label {
+  margin-top: 0.5rem;
+  font-weight: bold;
+}
+.radar-container {
+  max-width: 500px;
+  margin: 0 auto 3rem;
+}

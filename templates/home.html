@@ -380,6 +380,8 @@ document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
     </select>
 
     <input name="education" type="number" placeholder="Nivel educativo (1–4)" required>
+    <input name="height" type="number" step="any" placeholder="Estatura en metros" required>
+    <input name="weight" type="number" step="any" placeholder="Peso en kilogramos" required>
     <input type="hidden" name="currentSmoker" value="false">
     <label>
      <input type="checkbox" name="currentSmoker" value="true">
@@ -393,9 +395,11 @@ document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
     <input name="totChol" type="number" step="any" placeholder="Colesterol total (mg/dL)">
     <input name="sysBP" type="number" step="any" placeholder="Presión sistólica (mmHg)">
     <input name="diaBP" type="number" step="any" placeholder="Presión diastólica (mmHg)">
-    <input name="BMI" type="number" step="any" placeholder="Índice de masa corporal">
+    <!-- BMI se calcula automáticamente, por eso no se solicita en el formulario -->
     <input name="heartRate" type="number" placeholder="Frecuencia cardíaca (lpm)">
     <input name="glucose" type="number" step="any" placeholder="Glucosa en sangre (mg/dL)">
+    <input name="triglycerides" type="number" step="any" placeholder="Triglicéridos (mg/dL)">
+    
 
     <div style="margin-top: 20px;">
       <button type="submit" class="btn btn--primary">Agregar Paciente</button>
