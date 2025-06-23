@@ -361,7 +361,7 @@ document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
   }
 
   // Al iniciar página:
-  cargarPacientes();
+cargarPacientes();
 })();
 </script>
 <dialog id="modalPaciente" class="modal">
@@ -371,7 +371,7 @@ document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
 
     <input name="first_name" placeholder="Nombre" required>
     <input name="last_name" placeholder="Apellido" required>
-    <input name="age" type="number" placeholder="Edad" required>
+    <input name="age" type="number" placeholder="Edad" required min="1" max="110">
     
     <select name="male" required>
       <option value="">Seleccione sexo</option>
@@ -379,26 +379,26 @@ document.getElementById("busquedaPaciente").addEventListener("input", (e) => {
       <option value="false">Femenino</option>
     </select>
 
-    <input name="education" type="number" placeholder="Nivel educativo (1–4)" required>
-    <input name="height" type="number" step="any" placeholder="Estatura en metros" required>
-    <input name="weight" type="number" step="any" placeholder="Peso en kilogramos" required>
+    <input name="education" type="number" placeholder="Nivel educativo (1–4)" required min="1" max="4">
+    <input name="height" type="number" step="any" placeholder="Estatura en metros" required min="1.40" max="2.10">
+    <input name="weight" type="number" step="any" placeholder="Peso en kilogramos" required min="30" max="250">
     <input type="hidden" name="currentSmoker" value="false">
     <label>
      <input type="checkbox" name="currentSmoker" value="true">
      Fuma actualmente
     </label>
-    <input name="cigsPerDay" type="number" placeholder="Cigarrillos por día" disabled>
+    <input name="cigsPerDay" type="number" placeholder="Cigarrillos por día" disabled min="1" max="100">
     <label><input type="checkbox" name="BPMeds"> Toma medicamentos presión</label>
     <label><input type="checkbox" name="prevalentStroke"> ACV previo</label>
     <label><input type="checkbox" name="prevalentHyp"> Hipertensión</label>
     <label><input type="checkbox" name="diabetes"> Diabetes</label>
-    <input name="totChol" type="number" step="any" placeholder="Colesterol total (mg/dL)">
-    <input name="sysBP" type="number" step="any" placeholder="Presión sistólica (mmHg)">
-    <input name="diaBP" type="number" step="any" placeholder="Presión diastólica (mmHg)">
+    <input name="totChol" type="number" step="any" placeholder="Colesterol total (mg/dL)" required min="100" max="400">
+    <input name="sysBP" type="number" step="any" placeholder="Presión sistólica (mmHg)" required min="50" max="250" >
+    <input name="diaBP" type="number" step="any" placeholder="Presión diastólica (mmHg)" required min="30" max="150">
     <!-- BMI se calcula automáticamente, por eso no se solicita en el formulario -->
-    <input name="heartRate" type="number" placeholder="Frecuencia cardíaca (lpm)">
-    <input name="glucose" type="number" step="any" placeholder="Glucosa en sangre (mg/dL)">
-    <input name="triglycerides" type="number" step="any" placeholder="Triglicéridos (mg/dL)">
+    <input name="heartRate" type="number" placeholder="Frecuencia cardíaca (lpm)" required min="30" max="200">
+    <input name="glucose" type="number" step="any" placeholder="Glucosa en sangre (mg/dL)" required min="40" max="400">
+    <input name="triglycerides" type="number" step="any" placeholder="Triglicéridos (mg/dL)" required>
     
 
     <div style="margin-top: 20px;">
