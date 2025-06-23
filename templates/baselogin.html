@@ -18,33 +18,28 @@
   <!-- NAVBAR UNIVERSAL -->
    <!-- ======= NAVBAR ======= -->
   <nav class="navbar">
-    <div class="container">
-      <div class="navbar__left">
-        <a href="{% url 'page-landing' %}" class="navbar__logo">
-          <img src="{% static 'images/logo.png' %}" alt="Logo Clínica"/>
-        </a>
-      </div>
+    <div class="navbar__container">
+      <!-- Logo -->
+      <a href="{% url 'page-landing' %}" class="navbar__logo">
+        <img src="{% static 'images/logo.png' %}" alt="PrediCor" />
+      </a>
 
-      <div class="navbar__center">
-        <a href="{% url 'home' %}"
-           class="{% if request.path == '/' %}active{% endif %}">
-          Home
-        </a>
-      </div>
+      <!-- Menú links -->
+      <ul class="navbar__menu">
+        <li><a href="#" class="active">Home</a></li>
+        <li><a href="#about">About us</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact us</a></li>
+      </ul>
 
-      <div class="navbar__right">
-        <div class="navbar__perfil">
-          <img src="{% static 'images/default-avatar.png' %}" alt="Avatar Médico"/>
-          <div class="perfil__texto">
-            {% if user.is_authenticated %}
-              Dr. {{ user.last_name }}
-            {% else %}
-              Invitado
-            {% endif %}
-            <br/>
-            <span>Cardiólogo</span>
-          </div>
-        </div>
+      <!-- Botón destacado -->
+      <a href="{% url 'login' %}" class="navbar__btn">Realizar diagnóstico</a>
+
+      <!-- Ícono menú móvil (opcional) -->
+      <div class="navbar__toggle" id="mobile-menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
       </div>
     </div>
   </nav>

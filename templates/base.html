@@ -25,7 +25,6 @@
       </div>
 
       <div class="navbar__center">
-        <!-- Sólo Home por ahora -->
         <a href="{% url 'home' %}"
            class="{% if request.path == '/' %}active{% endif %}">
           Home
@@ -36,7 +35,13 @@
         <div class="navbar__perfil">
           <img src="{% static 'images/default-avatar.png' %}" alt="Avatar Médico"/>
           <div class="perfil__texto">
-            Dr. Gonzales<br/><span>Cardiólogo</span>
+            {% if user.is_authenticated %}
+              Dr. {{ user.last_name }}
+            {% else %}
+              Invitado
+            {% endif %}
+            <br/>
+            <span>Cardiólogo</span>
           </div>
         </div>
       </div>
