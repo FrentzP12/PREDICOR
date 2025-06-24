@@ -249,13 +249,19 @@ a.volver-dashboard {
 .charts-row {
   display: flex;
   justify-content: center;
-  gap: 2rem;
+  align-items: flex-start; /* Esto alinea la parte superior */
+  gap: 4rem; /* aumenta separación horizontal */
   flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 .chart-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra canvas y texto horizontalmente */
+  width: 220px; /* fuerza mismo ancho */
 }
+
 .chart-container canvas {
   width: 200px !important;
   height: 200px !important;
