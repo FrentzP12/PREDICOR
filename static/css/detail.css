@@ -255,6 +255,10 @@ a.volver-dashboard {
 }
 .chart-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra los elementos debajo del canvas */
+  justify-content: center;
 }
 .risk-percent {
   font-size: 1.5rem;
