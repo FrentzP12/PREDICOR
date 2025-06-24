@@ -256,6 +256,10 @@ a.volver-dashboard {
 .chart-container {
   text-align: center;
 }
+.chart-container canvas {
+  width: 200px !important;
+  height: 200px !important;
+}
 .risk-percent {
   font-size: 1.5rem;
   font-weight: bold;
