@@ -4,23 +4,27 @@
 
 {% block content %}
   <!-- ====== BANNER DE BIENVENIDA ====== -->
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-  <section class="banner container">
-    <div class="banner__contenido">
-      <!-- Texto de bienvenida -->
-      <div class="banner__texto">
-        <h2>
-          Bienvenido <span class="nombre-medico">Dr. Gonzales</span>!
-        </h2>
-        <p>Que tengas un excelente día atendiendo a tus pacientes.</p>
-      </div>
-      <!-- Imagen/Ilustración lateral -->
-      <div class="banner__imagen">
-        <!-- Reemplaza con la ilustración de médicos que tú quieras -->
-        <img src="static/images/medico.png" alt="Médico" />
-      </div>
+<section class="banner container">
+  <div class="banner__contenido">
+    <!-- Texto de bienvenida -->
+    <div class="banner__texto">
+      <h2>
+        Bienvenido
+        {% if request.user.is_authenticated and request.user.last_name %}
+          <span class="nombre-medico">Dr. {{ request.user.last_name }}</span>
+        {% else %}
+          <span class="nombre-medico">Dr. Cardiólogo</span>
+        {% endif %}!
+      </h2>
+      <p>Que tengas un excelente día atendiendo a tus pacientes.</p>
     </div>
-  </section>
+    <!-- Imagen/Ilustración lateral -->
+    <div class="banner__imagen">
+      <img src="{% static 'images/medico.png' %}" alt="Médico" />
+    </div>
+  </div>
+</section>
+
 
   <!-- ====== CONTENEDOR PRINCIPAL ====== -->
   <div class="container main">

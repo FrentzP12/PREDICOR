@@ -14,9 +14,7 @@
   <a href="{% url 'home' %}" class="btn-volver">← Volver al Dashboard</a>
 
   <div class="doctor-header">
-    <img src="{% static 'images/default-avatar.png' %}"
-         alt="Avatar Paciente"
-         class="avatar-large">
+    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar Paciente" class="avatar-large">
     <div>
       <h2>{{ paciente.first_name }} {{ paciente.last_name }}</h2>
       <p>Edad: {{ paciente.age }} años</p>
@@ -49,7 +47,7 @@
     </ul>
   </section>
 
-  <!-- Único botón que dispara ambas predicciones -->
+  <!-- Botón único -->
   <div style="text-align:center; margin:2rem 0;">
     <form method="get" style="display:inline-block;">
       <input type="hidden" name="predict" value="1">
@@ -59,126 +57,123 @@
     </form>
   </div>
 
-  <!-- Resultados: dos gráficos lado a lado -->
   {% if risk_chd %}
-    <!-- ————— Gráficos Doughnut ————— -->
+    <!-- Doughnuts lado a lado -->
     <div class="charts-row">
+      <!-- CHD -->
       <div class="chart-container">
-        <h4 class="chart-title">Riesgo Cardiopatía (CHD)</h4>
-        <canvas id="chartChd"></canvas>
-        <p id="chdLabel" class="risk-label"></p>
+        <h4>Riesgo Cardiopatía (CHD)</h4>
+        <canvas id="chartChd" width="200" height="200"></canvas>
+        <p id="chdPercent" class="risk-percent"></p>
+        <p id="chdLabel"   class="risk-label"></p>
       </div>
+      <!-- Stroke -->
       <div class="chart-container">
-        <h4 class="chart-title">Riesgo Accidente Cerebrovascular (Stroke)</h4>
-        <canvas id="chartStroke"></canvas>
-        <p id="strokeLabel" class="risk-label"></p>
+        <h4>Riesgo Accidente Cerebrovascular (Stroke)</h4>
+        <canvas id="chartStroke" width="200" height="200"></canvas>
+        <p id="strokePercent" class="risk-percent"></p>
+        <p id="strokeLabel"   class="risk-label"></p>
       </div>
     </div>
 
-    <!-- ————— Gráfico Radar ————— -->
+    <!-- Radar de métricas -->
     <div class="radar-container">
-      <canvas id="chartRadar"></canvas>
-      <p style="text-align:center; margin-top:0.5rem;">Perfil general de métricas clínicas</p>
+      <canvas id="chartRadar" width="400" height="400"></canvas>
+      <p style="text-align:center; margin-top:0.5rem;">
+        Perfil general de métricas clínicas
+      </p>
     </div>
   {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_scripts %}
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script>
-  {% if risk_chd %}
-    // ————— Doughnut CHD —————
-    const chdCtx = document.getElementById('chartChd').getContext('2d');
-    new Chart(chdCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Riesgo','Sin riesgo'],
-        datasets: [{
-          data: [{{ risk_chd }}, {{ risk_no_chd }}],
-          backgroundColor: ['#e74c3c','#ecf0f1'],
-          borderWidth: 1
-        }]
-      },
-      options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
-    });
-    // Etiqueta CHD
-    (()=>{
-      const lbl = document.getElementById('chdLabel');
-      const v = {{ risk_chd }};
-      if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
-      else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
-      else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
-      lbl.style.fontWeight = 'bold';
-    })();
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+{% if risk_chd %}
+  // — Doughnut CHD —
+  const chdCtx = document.getElementById('chartChd').getContext('2d');
+  new Chart(chdCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Riesgo','Sin riesgo'],
+      datasets: [{
+        data: [{{ risk_chd }}, {{ risk_no_chd }}],
+        backgroundColor: ['#e74c3c','#ecf0f1'],
+        borderWidth: 1
+      }]
+    },
+    options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
+  });
+  (()=>{
+    const v = {{ risk_chd }};
+    document.getElementById('chdPercent').textContent = v.toFixed(1) + '%';
+    const lbl = document.getElementById('chdLabel');
+    if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
+    else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
+    else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
+  })();
 
-    // ————— Doughnut Stroke —————
-    const strokeCtx = document.getElementById('chartStroke').getContext('2d');
-    new Chart(strokeCtx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Riesgo','Sin riesgo'],
-        datasets: [{
-          data: [{{ risk_stroke }}, {{ risk_no_stroke }}],
-          backgroundColor: ['#3498db','#ecf0f1'],
-          borderWidth: 1
-        }]
-      },
-      options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
-    });
-    // Etiqueta Stroke
-    (()=>{
-      const lbl = document.getElementById('strokeLabel');
-      const v = {{ risk_stroke }};
-      if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
-      else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
-      else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
-      lbl.style.fontWeight = 'bold';
-    })();
+  // — Doughnut Stroke —
+  const strokeCtx = document.getElementById('chartStroke').getContext('2d');
+  new Chart(strokeCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Riesgo','Sin riesgo'],
+      datasets: [{
+        data: [{{ risk_stroke }}, {{ risk_no_stroke }}],
+        backgroundColor: ['#3498db','#ecf0f1'],
+        borderWidth: 1
+      }]
+    },
+    options: { cutout: '70%', plugins: { legend: { display: false } }, responsive: true }
+  });
+  (()=>{
+    const v = {{ risk_stroke }};
+    document.getElementById('strokePercent').textContent = v.toFixed(1) + '%';
+    const lbl = document.getElementById('strokeLabel');
+    if (v <= 10)      { lbl.textContent='Saludable';   lbl.style.color='#27ae60'; }
+    else if (v <= 45) { lbl.textContent='Riesgo medio'; lbl.style.color='#e67e22'; }
+    else              { lbl.textContent='Riesgo alto';  lbl.style.color='#c0392b'; }
+  })();
 
-    // ————— Radar Actual vs Ideal —————
-    const radarCtx = document.getElementById('chartRadar').getContext('2d');
-    new Chart(radarCtx, {
-      type: 'radar',
-      data: {
-        labels: ['Colesterol','Triglicéridos','Glucosa','SysBP','HeartRate'],
-        datasets: [
-          {
-            label: 'Actual',
-            data: [
-              {{ paciente.totChol }},
-              {{ paciente.triglycerides }},
-              {{ paciente.glucose }},
-              {{ paciente.sysBP }},
-              {{ paciente.heartRate }}
-            ],
-            fill: true,
-            backgroundColor: 'rgba(210,16,52,0.2)',
-            borderColor: 'rgba(210,16,52,1)',
-            pointBackgroundColor: 'rgba(210,16,52,1)'
-          },
-          {
-            label: 'Ideal',
-            data: [
-              200,   // Colesterol ideal
-              150,   // Triglicéridos ideales
-              100,   // Glucosa ideal
-              120,   // SysBP ideal
-              80     // HeartRate ideal
-            ],
-            fill: true,
-            backgroundColor: 'rgba(52,152,219,0.2)',
-            borderColor: 'rgba(52,152,219,1)',
-            pointBackgroundColor: 'rgba(52,152,219,1)'
-          }
-        ]
-      },
-      options: {
-        scales: { r: { beginAtZero: true } },
-        plugins: { legend: { position: 'bottom' } },
-        responsive: true
-      }
-    });
-  {% endif %}
-  </script>
+  // — Radar —
+  const radarCtx = document.getElementById('chartRadar').getContext('2d');
+  new Chart(radarCtx, {
+    type: 'radar',
+    data: {
+      labels: ['Colesterol','Triglicéridos','Glucosa','SysBP','HeartRate'],
+      datasets: [
+        {
+          label: 'Actual',
+          data: [
+            {{ paciente.totChol }},
+            {{ paciente.triglycerides }},
+            {{ paciente.glucose }},
+            {{ paciente.sysBP }},
+            {{ paciente.heartRate }}
+          ],
+          fill: true,
+          backgroundColor: 'rgba(210,16,52,0.2)',
+          borderColor: 'rgba(210,16,52,1)',
+          pointBackgroundColor: 'rgba(210,16,52,1)'
+        },
+        {
+          label: 'Ideal',
+          data: [200,150,100,120,80],
+          fill: true,
+          backgroundColor: 'rgba(52,152,219,0.2)',
+          borderColor: 'rgba(52,152,219,1)',
+          pointBackgroundColor: 'rgba(52,152,219,1)'
+        }
+      ]
+    },
+    options: {
+      scales: { r: { beginAtZero: true } },
+      plugins: { legend: { position: 'bottom' } },
+      responsive: true
+    }
+  });
+{% endif %}
+</script>
 {% endblock %}

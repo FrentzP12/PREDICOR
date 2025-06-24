@@ -18,23 +18,24 @@ data_path = Path("C:/Users/frent/OneDrive/Desktop/Project_HC/ML/heart-stroke/hea
 df = pd.read_csv(data_path)
 
 # ------------------------------
-# 2) Definir objetivo: 'heart_stroke'
+# 2) Definir columna objetivo
 # ------------------------------
 target_col = "heart_stroke"
 if target_col not in df.columns:
     raise ValueError(f"No encuentro la columna objetivo '{target_col}' en {df.columns.tolist()}")
 
-# Separar X e y
 X_df = df.drop(columns=[target_col])
 y_raw = df[target_col]
 
-# Asegurar 0/1 en y
-y = y_raw.astype(int)
+# Asegurar que los valores sean 0/1
+if set(y_raw.unique()) <= {0, 1}:
+    y = y_raw.astype(int)
+else:
+    y = (y_raw > 0).astype(int)
 
 # ------------------------------
-# 3) Preprocesamiento mixto
+# 3) Selección explícita de columnas (ordenadas)
 # ------------------------------
-# Tus columnas de entrada (todas deberían ser numéricas tras la transformación previa)
 feature_cols = [
     'male', 'age', 'education', 'currentSmoker', 'cigsPerDay', 'BPMeds',
     'prevalentStroke', 'prevalentHyp', 'diabetes', 'totChol',
@@ -42,47 +43,46 @@ feature_cols = [
 ]
 X_df = X_df[feature_cols]
 
-# Identificar numéricas y categóricas
+# ------------------------------
+# 4) Preprocesamiento mixto
+# ------------------------------
 numeric_cols = X_df.select_dtypes(include=[np.number]).columns.tolist()
 cat_cols = X_df.select_dtypes(exclude=[np.number]).columns.tolist()
 
-# Pipeline numérico: imputar mediana + escalar
 numeric_pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy='median')),
     ('scaler', StandardScaler())
 ])
 
-# Pipeline categórico: imputar moda + one-hot (si hubiera)
 categorical_pipeline = Pipeline([
     ('imputer', SimpleImputer(strategy='most_frequent')),
-    ('onehot',   OneHotEncoder(handle_unknown='ignore', sparse_output=False))
-]) if len(cat_cols) > 0 else None
+    ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+]) if cat_cols else None
 
-# ColumnTransformer
 transformers = [('num', numeric_pipeline, numeric_cols)]
 if categorical_pipeline:
     transformers.append(('cat', categorical_pipeline, cat_cols))
 
 preprocessor = ColumnTransformer(transformers)
 
-# Aplicar
+# Aplicar transformaciones
 X = preprocessor.fit_transform(X_df)
 
 # ------------------------------
-# 4) Train/test split
+# 5) Train/Test Split
 # ------------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, stratify=y, random_state=42
 )
 
 # ------------------------------
-# 5) Entrenar XGBoost
+# 6) Entrenamiento del modelo XGBoost
 # ------------------------------
 dtrain = xgb.DMatrix(X_train, label=y_train)
-dtest  = xgb.DMatrix(X_test,  label=y_test)
+dtest  = xgb.DMatrix(X_test, label=y_test)
 
 params = {
-    'objective':   'binary:logistic',
+    'objective': 'binary:logistic',
     'eval_metric': 'auc'
 }
 
@@ -96,31 +96,28 @@ bst = xgb.train(
 )
 
 # ------------------------------
-# 6) Evaluación
+# 7) Evaluación del modelo
 # ------------------------------
 y_pred_prob = bst.predict(dtest)
 auc = roc_auc_score(y_test, y_pred_prob)
-print(f"AUC en test: {auc:.3f}")
+print(f"✅ AUC en test: {auc:.3f}")
 
 # ------------------------------
-# 7) Importancia de características
+# 8) Importancia de características
 # ------------------------------
 fig, ax = plt.subplots()
 xgb.plot_importance(bst, ax=ax)
-ax.set_title("Importancia de características para heart_stroke")
+ax.set_title("Importancia de características para Heart Stroke")
 plt.tight_layout()
 plt.show()
 
 # ------------------------------
-# 8) Guardar modelo y preprocesador
+# 9) Guardado de modelo y preprocesador
 # ------------------------------
 bst.save_model("xgb_heart_stroke.json")
 joblib.dump(preprocessor, "preprocessor_heart_stroke.joblib")
 
-# Para recargar luego:
-# from pathlib import Path
-# import joblib
-# import xgboost as xgb
-# preprocessor = joblib.load("preprocessor_heart_stroke.joblib")
-# bst = xgb.Booster()
-# bst.load_model("xgb_heart_stroke.json")
+# Puedes recargarlo luego con:
+# model = xgb.Booster()
+# model.load_model("xgb_heart_stroke.json")
+# preproc = joblib.load("preprocessor_heart_stroke.joblib")

@@ -22,6 +22,17 @@ from .forms                import RegistroForm, LoginDNIForm
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+CHD_FEATURES = [  # columnas usadas en modelo CHD
+    'male', 'age', 'education', 'currentSmoker', 'cigsPerDay', 'BPMeds',
+    'prevalentStroke', 'prevalentHyp', 'diabetes', 'totChol',
+    'sysBP', 'diaBP', 'BMI', 'heartRate', 'glucose'
+]
+
+STROKE_FEATURES = [  # columnas usadas en modelo Stroke (probablemente iguales, pero asegurémonos)
+    'male', 'age', 'education', 'currentSmoker', 'cigsPerDay', 'BPMeds',
+    'prevalentStroke', 'prevalentHyp', 'diabetes', 'totChol',
+    'sysBP', 'diaBP', 'BMI', 'heartRate', 'glucose'
+]
 
 # Modelo CHD
 MODEL_CHD    = xgb.Booster(); MODEL_CHD.load_model(str(BASE_DIR / "ML/modelo_xgb.json"))
@@ -80,7 +91,7 @@ class PatientDetailView(DetailView):
         # Si viene ?predict=1, generamos ambas predicciones
         if self.request.GET.get("predict") == "1":
             # 1) Armamos el DataFrame base
-            base = [{
+            base = {
                 "male": int(p.male),
                 "age": p.age,
                 "education": p.education,
@@ -96,20 +107,27 @@ class PatientDetailView(DetailView):
                 "BMI": p.BMI,
                 "heartRate": p.heartRate,
                 "glucose": p.glucose,
-            }]
-            df = pd.DataFrame(base)
+            }
 
-            # 2) Predicción CHD
-            X_chd = PREPROC_CHD.transform(df)
+            # Para CHD
+            df_chd = pd.DataFrame([{k: base[k] for k in CHD_FEATURES}])
+            X_chd = PREPROC_CHD.transform(df_chd)
             prob_chd = float(MODEL_CHD.predict(xgb.DMatrix(X_chd))[0])
             ctx["risk_chd"]     = round(prob_chd * 100, 1)
             ctx["risk_no_chd"]  = round(100 - ctx["risk_chd"], 1)
+            print("——— PREDICCIÓN CHD ———")
+            print(f"Input CHD: {df_chd.to_dict(orient='records')[0]}")
+            print(f"Probabilidad CHD: {prob_chd:.4f}")
 
-            # 3) Predicción Stroke
-            X_st = PREPROC_STROKE.transform(df)
+            # Para Stroke
+            df_st = pd.DataFrame([{k: base[k] for k in STROKE_FEATURES}])
+            X_st = PREPROC_STROKE.transform(df_st)
             prob_stroke = float(MODEL_STROKE.predict(xgb.DMatrix(X_st))[0])
             ctx["risk_stroke"]      = round(prob_stroke * 100, 1)
             ctx["risk_no_stroke"]   = round(100 - ctx["risk_stroke"], 1)
+            print("——— PREDICCIÓN STROKE ———")
+            print(f"Input Stroke: {df_st.to_dict(orient='records')[0]}")
+            print(f"Probabilidad Stroke: {prob_stroke:.4f}")
 
             # 1️⃣ RANGOS IDEALES
             ctx["ideal_ranges"] = {

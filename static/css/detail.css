@@ -248,19 +248,25 @@ a.volver-dashboard {
 }
 .charts-row {
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  justify-content: center;
   gap: 2rem;
+  flex-wrap: wrap;
   margin-bottom: 2rem;
 }
 .chart-container {
   text-align: center;
 }
+.risk-percent {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.25rem;
+}
 .risk-label {
-  margin-top: 0.5rem;
+  font-size: 1rem;
   font-weight: bold;
 }
 .radar-container {
   max-width: 500px;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2rem;
 }
+
